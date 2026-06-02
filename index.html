@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backlog à venir</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f5f2;--bg-card:#fff;--bg-subtle:#efede9;
+  --bg-sage:#eff6ff;--bg-equi:#f0fdf4;--bg-conf:#fefce8;--bg-risk:#fef2f2;
+  --text:#1c1917;--text-2:#57534e;--text-3:#a8a29e;
+  --text-sage:#1d4ed8;--text-equi:#15803d;--text-conf:#a16207;--text-risk:#b91c1c;
+  --border:rgba(0,0,0,.10);--border-2:rgba(0,0,0,.18);
+  --border-sage:rgba(29,78,216,.28);--border-equi:rgba(21,128,61,.28);
+  --border-conf:rgba(161,98,7,.28);--border-risk:rgba(185,28,28,.28);
+  --gauge-sage:#bfdbfe;--gauge-equi:#bbf7d0;--gauge-conf:#fef08a;--gauge-risk:#fecaca;
+  --r-sm:6px;--r-md:8px;--r-lg:12px;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:system-ui,-apple-system,sans-serif;
+  --zc:#1d4ed8;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.5}
+.container{max-width:760px;margin:0 auto;padding:24px 16px 56px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:0.5px solid var(--border);margin-bottom:20px;gap:12px}
+.hdr h1{font-family:var(--serif);font-size:17px;font-weight:700;line-height:1.3}
+.hdr-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-2);margin-bottom:4px}
+.rule-tag{background:var(--bg-conf);color:var(--text-conf);border-radius:var(--r-md);padding:8px 12px;text-align:center;flex-shrink:0}
+.rule-tag .n{font-family:var(--serif);font-size:15px;font-weight:700}
+.rule-tag .s{font-size:9px;letter-spacing:1px;text-transform:uppercase;opacity:.8;margin-top:2px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pill{background:var(--bg-subtle);border:0.5px solid var(--border);border-radius:var(--r-md);padding:10px}
+.pill .pl{font-size:10px;color:var(--text-2);margin-bottom:2px}
+.pill .pn{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--text-conf)}
+.pill .ps{font-size:10px;color:var(--text-3)}
+.sh{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sn{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text-3);line-height:1;opacity:.4}
+.st{font-size:13px;font-weight:600}
+.ss{font-size:10px;color:var(--text-2)}
+.card{background:var(--bg-card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:14px}
+.cw{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin:0 0 2px}
+.cn{font-family:var(--serif);font-size:14px;font-weight:700;margin:0 0 10px}
+.ir{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:0.5px solid var(--border);font-size:11px}
+.ir:last-of-type{border:none}
+.il{color:var(--text-2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:6px}
+.iv{font-weight:600;white-space:nowrap}
+.ratb{background:var(--bg-subtle);border-radius:var(--r-md);padding:10px 12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;border:0.5px solid var(--border)}
+.rlbl{font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:1px}
+.rv{font-family:var(--serif);font-size:18px;font-weight:700;margin-top:2px}
+.rright{text-align:right}
+.rmg{font-size:11px;font-weight:600;margin-top:3px}
+.bt{background:var(--border-2);border-radius:3px;height:5px;margin-top:5px;overflow:hidden;width:80px}
+.bf{height:100%;border-radius:3px}
+.bp{font-size:9px;color:var(--text-3);margin-top:3px}
+.avb{background:var(--bg-conf);border:0.5px solid var(--border-conf);border-radius:var(--r-md);padding:10px 14px;font-size:11px;display:flex;align-items:flex-start;gap:8px;margin:10px 0 28px;line-height:1.5}
+.avb strong{color:var(--text-conf)}
+.zone-panel{border-radius:var(--r-lg);padding:18px;border:1px solid;transition:background .35s,border-color .35s;margin-bottom:24px}
+.zone-panel.sage{background:var(--bg-sage);border-color:var(--border-sage)}
+.zone-panel.equilibre{background:var(--bg-equi);border-color:var(--border-equi)}
+.zone-panel.confort{background:var(--bg-conf);border-color:var(--border-conf)}
+.zone-panel.risque{background:var(--bg-risk);border-color:var(--border-risk)}
+.zbadge{font-family:var(--serif);font-size:16px;font-weight:700;margin-bottom:3px;transition:color .35s}
+.zdesc{font-size:11px;margin-bottom:14px;transition:color .35s}
+.zone-panel.sage .zbadge,.zone-panel.sage .zdesc{color:var(--text-sage)}
+.zone-panel.equilibre .zbadge,.zone-panel.equilibre .zdesc{color:var(--text-equi)}
+.zone-panel.confort .zbadge,.zone-panel.confort .zdesc{color:var(--text-conf)}
+.zone-panel.risque .zbadge,.zone-panel.risque .zdesc{color:var(--text-risk)}
+.prv{font-family:var(--serif);font-size:32px;font-weight:700;transition:color .35s}
+.zone-panel.sage .prv{color:var(--text-sage)}
+.zone-panel.equilibre .prv{color:var(--text-equi)}
+.zone-panel.confort .prv{color:var(--text-conf)}
+.zone-panel.risque .prv{color:var(--text-risk)}
+.pr-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-2);margin-bottom:4px}
+.pr-sub{font-size:11px;color:var(--text-2);margin-top:3px}
+.gauge-bar{display:flex;height:24px;border-radius:var(--r-sm);overflow:hidden;margin-bottom:3px}
+.gs{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;text-transform:uppercase}
+.gs.g-s{flex:40;background:var(--gauge-sage);color:var(--text-sage)}
+.gs.g-e{flex:20;background:var(--gauge-equi);color:var(--text-equi)}
+.gs.g-c{flex:10;background:var(--gauge-conf);color:var(--text-conf)}
+.gs.g-r{flex:30;background:var(--gauge-risk);color:var(--text-risk)}
+.gpw{position:relative;height:14px;font-size:9px;color:var(--text-3);margin-bottom:2px}
+.gpw span{position:absolute}
+.gmr{position:relative;height:20px}
+.gn{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;transition:left .35s}
+.gnl{width:2px;height:10px;border-radius:1px;transition:background .35s}
+.gnlbl{font-size:10px;font-weight:700;margin-top:1px;transition:color .35s}
+.zone-panel.sage .gnl{background:var(--text-sage)} .zone-panel.sage .gnlbl{color:var(--text-sage)}
+.zone-panel.equilibre .gnl{background:var(--text-equi)} .zone-panel.equilibre .gnlbl{color:var(--text-equi)}
+.zone-panel.confort .gnl{background:var(--text-conf)} .zone-panel.confort .gnlbl{color:var(--text-conf)}
+.zone-panel.risque .gnl{background:var(--text-risk)} .zone-panel.risque .gnlbl{color:var(--text-risk)}
+.sm{background:rgba(255,255,255,.5);border-radius:var(--r-md);padding:9px 10px;border:0.5px solid rgba(255,255,255,.6)}
+.sml{font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px}
+.smv{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
+.sms{font-size:10px;color:var(--text-2);margin-top:1px}
+.sg{display:flex;flex-direction:column;gap:16px;margin-top:16px;padding-top:16px;border-top:0.5px solid rgba(255,255,255,.3)}
+.sr{display:flex;flex-direction:column;gap:5px}
+.st2{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px}
+.slbl{font-size:12px;color:var(--text-2);font-weight:600}
+.sval{font-family:var(--serif);font-size:15px;font-weight:700}
+.sval .u{font-family:var(--sans);font-size:11px;font-weight:400;color:var(--text-2)}
+.snote{font-size:10px;color:var(--text-3);margin-top:2px}
+.wnote{font-size:10px;color:var(--text-risk);font-weight:600;margin-top:3px;padding:4px 8px;background:rgba(185,28,28,.08);border-radius:4px}
+.dr{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:11px;color:var(--text-2);margin-top:10px;padding-top:10px;border-top:0.5px solid rgba(255,255,255,.3)}
+.dr strong{font-weight:600}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(0,0,0,.18);cursor:pointer;outline:none;display:block;margin:6px 0}
+input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;background:rgba(0,0,0,.18);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:var(--zc,#1d4ed8);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);cursor:pointer;margin-top:-12px}
+input[type=range]::-moz-range-track{height:4px;background:rgba(0,0,0,.18);border-radius:2px;border:none}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--zc,#1d4ed8);border:3px solid #fff;cursor:pointer}
+.fn{font-size:11px;color:var(--text-3);padding:16px 0 0;border-top:0.5px solid var(--border);margin-top:20px;line-height:1.5}
+@media(max-width:640px){
+  .container{padding:16px 12px 40px}
+  .hdr{flex-direction:column}
+  .rule-tag{align-self:flex-start}
+  .g3{grid-template-columns:1fr}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .pills{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px}
+  .zone-panel{padding:14px}
+  .prv{font-size:24px}
+  .zh{flex-direction:column;gap:8px}
+  .zh .prb{text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hdr">
+  <div>
+    <p class="hdr-lbl">Règle 20/4/15 — Adaptée au contexte fiscal français</p>
+    <h1>Budget automobile — Simulateur d’acquisition</h1>
+  </div>
+  <div class="rule-tag"><div class="n">20 · 4 · 15</div><div class="s">France</div></div>
+</div>
+
+<div class="g3 pills" style="margin-bottom:24px">
+  <div class="pill"><div class="pl">Apport minimum</div><div class="pn">20%</div><div class="ps">sur le prix du véhicule</div></div>
+  <div class="pill"><div class="pl">Durée recommandée</div><div class="pn">≤ 4 ans</div><div class="ps">crédit (48 mois max)</div></div>
+  <div class="pill"><div class="pl">Budget mensuel max</div><div class="pn">15%</div><div class="ps">du revenu net mensuel</div></div>
+</div>
+
+<div class="sh"><span class="sn">1</span><div><div class="st">Situation actuelle</div><div class="ss">Crédit · assurance · entretien · carburant · péages</div></div></div>
+<div class="g3" style="margin-bottom:10px">
+  <div class="card"><div class="cw">Partenaire</div><div class="cn">Elle</div>
+    <div class="ir"><span class="il">Revenu net</span><span class="iv">2 030 €/mois</span></div>
+    <div class="ir"><span class="il">Seuil 15%</span><span class="iv" style="color:var(--text-conf)">305 €/mois</span></div>
+    <div class="ir"><span class="il">Crédit auto</span><span class="iv">0 €</span></div>
+    <div class="ir"><span class="il">Charges totales</span><span class="iv">~215 €</span></div>
+    <div class="ratb"><div><div class="rlbl">Ratio actuel</div><div class="rv" style="color:var(--text-equi)">10,6%</div>
+    <div class="bt"><div class="bf" style="background:var(--text-equi);width:71%"></div></div><div class="bp">Zone équilibre</div></div>
+    <div class="rright"><div class="rlbl">Marge</div><div class="rmg" style="color:var(--text-equi)">~90 €/mois</div></div></div>
+  </div>
+  <div class="card"><div class="cw">Moi</div><div class="cn">Lui</div>
+    <div class="ir"><span class="il">Revenu net</span><span class="iv">4 000–5 000 €</span></div>
+    <div class="ir"><span class="il">Seuil 15%</span><span class="iv" style="color:var(--text-conf)">600–750 €</span></div>
+    <div class="ir"><span class="il">Crédit Citroën</span><span class="iv">150 €</span></div>
+    <div class="ir"><span class="il">Charges</span><span class="iv">~78 €</span></div>
+    <div class="ratb"><div><div class="rlbl">Ratio actuel</div><div class="rv" style="color:var(--text-sage)">4,6–5,7%</div>
+    <div class="bt"><div class="bf" style="background:var(--text-sage);width:38%"></div></div><div class="bp">Zone sage</div></div>
+    <div class="rright"><div class="rlbl">Marge</div><div class="rmg" style="color:var(--text-equi)">372–522 €</div></div></div>
+  </div>
+  <div class="card" style="border-color:var(--border-sage)"><div class="cw">Foyer</div><div class="cn">Couple</div>
+    <div class="ir"><span class="il">Revenu foyer</span><span class="iv">6 030–7 030 €</span></div>
+    <div class="ir"><span class="il">Seuil 15%</span><span class="iv" style="color:var(--text-conf)">905–1 055 €</span></div>
+    <div class="ir"><span class="il">Total auto foyer</span><span class="iv" style="color:var(--text-sage)">~443 €/mois</span></div>
+    <div class="ratb"><div><div class="rlbl">Ratio foyer</div><div class="rv" style="color:var(--text-sage)">6,3–7,3%</div>
+    <div class="bt"><div class="bf" style="background:var(--text-sage);width:49%"></div></div><div class="bp">Zone sage</div></div>
+    <div class="rright"><div class="rlbl">Marge</div><div class="rmg" style="color:var(--text-equi)">462–612 €</div></div></div>
+  </div>
+</div>
+
+<div class="avb"><span style="font-size:15px;flex-shrink:0">↺</span>
+  <span><strong>Après vente de la Citroën</strong> · Lui libère <strong>228 €/mois</strong> · Budget dispo : <strong>600–750 €</strong> · Ratio foyer en transition : <strong>3,1–3,6%</strong> · Marge couple : <strong>690–840 €</strong></span>
+</div>
+
+<div class="sh"><span class="sn">2</span><div><div class="st">Simulateur — ajustez les curseurs</div><div class="ss">Le prix d’achat se calcule en temps réel</div></div></div>
+
+<div class="zone-panel sage" id="ZP">
+  <div class="zh" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+    <div><div class="zbadge" id="ZB">Sage</div><div class="zdesc" id="ZD">Excellent — ratio très confortable</div></div>
+    <div class="prb" style="text-align:right">
+      <div class="pr-lbl">Prix d’achat du véhicule</div>
+      <div class="prv" id="SP">--</div>
+      <div class="pr-sub">dont <span id="SF">--</span> € financé</div>
+    </div>
+  </div>
+  <div class="gauge-bar"><div class="gs g-s">Sage</div><div class="gs g-e">Équil.</div><div class="gs g-c">Conf.</div><div class="gs g-r">Risque</div></div>
+  <div class="gpw">
+    <span style="left:0%">0%</span>
+    <span style="left:40%;transform:translateX(-50%)">10%</span>
+    <span style="left:60%;transform:translateX(-50%)">15%</span>
+    <span style="left:70%;transform:translateX(-50%)">17,5%</span>
+    <span style="right:0">25%+</span>
+  </div>
+  <div class="gmr"><div class="gn" id="GN" style="left:0%"><div class="gnl"></div><div class="gnlbl" id="GL">--%</div></div></div>
+  <div class="g4" style="margin-top:14px">
+    <div class="sm"><div class="sml">Mensualité crédit</div><div class="smv" id="S1">--</div></div>
+    <div class="sm"><div class="sml">Charges fixes</div><div class="smv" id="S2">--</div></div>
+    <div class="sm"><div class="sml">Total mensuel</div><div class="smv" id="S3">--</div><div class="sms">crédit + charges</div></div>
+    <div class="sm"><div class="sml">Apport versé</div><div class="smv" id="S4">--</div><div class="sms" id="S5">-- du prix</div></div>
+  </div>
+  <div class="dr">
+    <span>Ratio Lui : <strong id="DR1">--%</strong></span>
+    <span>Ratio Couple : <strong id="DR2">--%</strong></span>
+    <span>Marge Lui : <strong id="DR3">--</strong></span>
+    <span>Marge Couple : <strong id="DR4">--</strong></span>
+  </div>
+  <div class="sg">
+    <div class="sr">
+      <div class="st2"><span class="slbl">Apport</span>
+        <span class="sval"><span id="VA">4 350</span> <span class="u">€ (<span id="VAP">20</span>% du prix)</span></span></div>
+      <input type="range" id="A" min="0" max="30000" step="500" value="4350" oninput="calc()" onchange="calc()">
+      <div class="snote">0 — 30 000 € · objectif recommandé : ≥ 20% du prix</div>
+      <div class="wnote" id="WA1" style="display:none"></div>
+      <div class="wnote" id="WA2" style="display:none"></div>
+    </div>
+    <div class="sr">
+      <div class="st2"><span class="slbl">Mensualité crédit</span>
+        <span class="sval"><span id="VM">400</span> <span class="u">€/mois</span></span></div>
+      <input type="range" id="M" min="50" max="800" step="5" value="400" oninput="calc()" onchange="calc()">
+      <div class="snote">50 — 800 €/mois</div>
+    </div>
+    <div class="sr">
+      <div class="st2"><span class="slbl">Durée du crédit</span>
+        <span class="sval" id="VMO">48 mois (4 ans)</span></div>
+      <input type="range" id="MO" min="12" max="60" step="6" value="48" oninput="calc()" onchange="calc()">
+      <div class="snote" id="WMO">12 — 60 mois · la règle recommande ≤ 48 mois</div>
+    </div>
+    <div class="sr">
+      <div class="st2"><span class="slbl">Charges (ass.+entr.+carb.+péages)</span>
+        <span class="sval"><span id="VC">270</span> <span class="u">€/mois</span></span></div>
+      <input type="range" id="C" min="50" max="600" step="10" value="270" oninput="calc()" onchange="calc()">
+      <div class="snote">50 — 600 €/mois</div>
+    </div>
+  </div>
+</div>
+
+<div class="sh" style="border-top:0.5px solid var(--border);padding-top:20px">
+  <span class="sn">3</span>
+  <div><div class="st">Après achat — simulation en temps réel</div><div class="ss">Se met à jour automatiquement</div></div>
+</div>
+<div class="g3" id="S3C"></div>
+
+<div class="fn">Règle 20/4/15 adaptée au contexte fiscal français. Taux de référence : 4,90% annuel. Allocations déplacement non comptées. Revenus nets uniquement.</div>
+</div>
+
+<script>
+var R = 0.049 / 12;
+
+function pv(m, n) {
+  if (m <= 0 || n <= 0) return 0;
+  return m * (1 - Math.pow(1 + R, -n)) / R;
+}
+
+function f(n) {
+  n = Math.round(n);
+  var s = Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+  return n < 0 ? '-' + s : s;
+}
+
+function fd(n, d) {
+  var m = Math.pow(10, d);
+  return (Math.round(parseFloat(n) * m) / m).toFixed(d).replace('.', ',');
+}
+
+function rc(r) {
+  return r <= 10 ? 'var(--text-sage)' : r <= 15 ? 'var(--text-equi)' : r <= 17.5 ? 'var(--text-conf)' : 'var(--text-risk)';
+}
+
+function bp(r) { return Math.min(Math.round(r / 17.5 * 100), 100); }
+
+function mf(m) {
+  m = Math.round(m);
+  var c = m < 0 ? 'var(--text-risk)' : 'var(--text-equi)';
+  return '<span style="color:' + c + '">' + (m < 0 ? '-' : '+') + f(Math.abs(m)) + '\u00a0\u20ac/mois</span>';
+}
+
+function ir(l, v, c) {
+  return '<div class="ir"><span class="il">' + l + '</span><span class="iv"' + (c ? ' style="color:' + c + '"' : '') + '>' + v + '</span></div>';
+}
+
+function rb(lbl, val, col, b, mg) {
+  return '<div class="ratb"><div><div class="rlbl">' + lbl + '</div><div class="rv" style="color:' + col + '">' + val + '</div>' +
+    '<div class="bt"><div class="bf" style="background:' + col + ';width:' + b + '%"></div></div>' +
+    '<div class="bp">' + b + '% du seuil</div></div>' +
+    '<div class="rright"><div class="rlbl">Marge</div><div class="rmg">' + mg + '</div></div></div>';
+}
+
+function calc() {
+  var a  = parseInt(document.getElementById('A').value,  10) || 0;
+  var m  = parseInt(document.getElementById('M').value,  10) || 0;
+  var mo = parseInt(document.getElementById('MO').value, 10) || 48;
+  var c  = parseInt(document.getElementById('C').value,  10) || 0;
+
+  var fi  = Math.round(pv(m, mo));
+  var px  = fi + a;
+  var tot = m + c;
+  var ap  = px > 0 ? Math.round(a / px * 100) : 0;
+  var rl  = tot / 4000;
+
+  var zone = rl <= 0.10 ? 'sage' : rl <= 0.15 ? 'equilibre' : rl <= 0.175 ? 'confort' : 'risque';
+  var zn   = zone === 'sage' ? 'Sage' : zone === 'equilibre' ? '\u00c9quilibre' : zone === 'confort' ? 'Confort' : 'Risque';
+  var zd   = zone === 'sage' ? 'Excellent \u2014 ratio tr\u00e8s confortable' :
+             zone === 'equilibre' ? 'Dans le budget \u2014 utilise bien le seuil' :
+             zone === 'confort' ? 'Attention \u2014 au-del\u00e0 du seuil recommand\u00e9' :
+             'Zone risqu\u00e9e \u2014 effort financier \u00e9lev\u00e9';
+  var zc   = zone === 'sage' ? 'var(--text-sage)' : zone === 'equilibre' ? 'var(--text-equi)' :
+             zone === 'confort' ? 'var(--text-conf)' : 'var(--text-risk)';
+
+  document.getElementById('ZP').className = 'zone-panel ' + zone;
+  document.documentElement.style.setProperty('--zc', zc);
+
+  document.getElementById('ZB').textContent = zn;
+  document.getElementById('ZD').innerHTML   = zd;
+  document.getElementById('SP').textContent = f(px) + '\u00a0\u20ac';
+  document.getElementById('SP').style.color = zc;
+  document.getElementById('SF').textContent = f(fi);
+
+  var np = Math.min(rl / 0.25, 1) * 100;
+  document.getElementById('GN').style.left     = np + '%';
+  document.getElementById('GL').textContent    = fd(rl * 100, 1) + '%';
+  document.getElementById('S1').textContent    = f(m) + '\u00a0\u20ac/mois';
+  document.getElementById('S2').textContent    = f(c) + '\u00a0\u20ac/mois';
+  document.getElementById('S3').textContent    = f(tot) + '\u00a0\u20ac/mois';
+  document.getElementById('S4').textContent    = f(a) + '\u00a0\u20ac';
+  document.getElementById('S5').textContent    = ap + '% du prix';
+  document.getElementById('VA').textContent    = f(a);
+  document.getElementById('VAP').textContent   = ap;
+  document.getElementById('VM').textContent    = f(m);
+  document.getElementById('VC').textContent    = f(c);
+
+  var y = Math.floor(mo / 12), rem = mo % 12;
+  var ms = mo + ' mois (' + y + ' an' + (y > 1 ? 's' : '') + (rem > 0 ? ' ' + rem + ' mois' : '') + ')';
+  document.getElementById('VMO').textContent = ms;
+
+  var wmo = document.getElementById('WMO');
+  if (mo > 48) { wmo.className = 'wnote'; wmo.textContent = '\u26a0\ufe0f ' + mo + ' mois d\u00e9passe les 48 mois recommand\u00e9s par la r\u00e8gle 20/4/15'; }
+  else { wmo.className = 'snote'; wmo.textContent = '12 \u2014 60 mois \u00b7 la r\u00e8gle recommande \u2264 48 mois'; }
+
+  var wa1 = document.getElementById('WA1');
+  var wa2 = document.getElementById('WA2');
+  if (px > 0 && ap < 20) { wa1.style.display = ''; wa1.textContent = '\u26a0\ufe0f Apport (' + ap + '%) inf\u00e9rieur aux 20% recommand\u00e9s'; }
+  else wa1.style.display = 'none';
+  if (a > 10000) { wa2.style.display = ''; wa2.textContent = '\u26a0\ufe0f ' + f(a) + '\u00a0\u20ac en cash \u2014 v\u00e9rifiez votre fonds d\u2019urgence'; }
+  else wa2.style.display = 'none';
+
+  var rll = parseFloat((tot/4000*100).toFixed(1)), rlh = parseFloat((tot/5000*100).toFixed(1));
+  var rcl = parseFloat(((215+tot)/6030*100).toFixed(1)), rch = parseFloat(((215+tot)/7030*100).toFixed(1));
+  var mll = Math.round(4000*0.15-tot), mlh = Math.round(5000*0.15-tot);
+  var mcl = Math.round(6030*0.15-(215+tot)), mch = Math.round(7030*0.15-(215+tot));
+  var e1=document.getElementById('DR1'); e1.textContent=fd(rlh,1)+'\u2013'+fd(rll,1)+'%'; e1.style.color=rc(rll);
+  var e2=document.getElementById('DR2'); e2.textContent=fd(rch,1)+'\u2013'+fd(rcl,1)+'%'; e2.style.color=rc(rcl);
+  document.getElementById('DR3').innerHTML=mf(mll)+' \u00e0 '+mf(mlh);
+  document.getElementById('DR4').innerHTML=mf(mcl)+' \u00e0 '+mf(mch);
+
+  var ec = '<div class="card"><div class="cw">Partenaire</div><div class="cn">Elle \u00b7 <span style="font-size:11px;font-weight:400;color:var(--text-3)">inchang\u00e9e</span></div>' +
+    ir('Revenu net','2\u202f030\u00a0\u20ac/mois','')+ir('Seuil 15%','305\u00a0\u20ac/mois','var(--text-conf)')+
+    ir('Cr\u00e9dit auto','0\u00a0\u20ac','')+ir('Charges totales','~215\u00a0\u20ac','')+
+    rb('Ratio \u00b7 inchang\u00e9','10,6%','var(--text-equi)',61,'<span style="color:var(--text-equi)">~90\u00a0\u20ac/mois</span>')+
+    '</div>';
+
+  var rh2=parseFloat((tot/5000*100).toFixed(1)), rl2=parseFloat((tot/4000*100).toFixed(1));
+  var lc='<div class="card"><div class="cw">Moi</div><div class="cn">Lui</div>'+
+    ir('Revenu net','4\u202f000\u20135\u202f000\u00a0\u20ac/mois','')+
+    ir('Seuil 15%','600\u2013750\u00a0\u20ac/mois','var(--text-conf)')+
+    ir('Mensualit\u00e9 cr\u00e9dit',f(m)+'\u00a0\u20ac','')+
+    ir('Charges',f(c)+'\u00a0\u20ac','')+
+    ir('Total auto',f(tot)+'\u00a0\u20ac/mois','var(--text-conf)')+
+    rb('Ratio',fd(rh2,1)+'\u2013'+fd(rl2,1)+'%',rc(rl2),bp(rl2),mf(Math.round(4000*0.15-tot))+' \u00e0 '+mf(Math.round(5000*0.15-tot)))+
+    '</div>';
+
+  var t2=215+tot, rh3=parseFloat((t2/7030*100).toFixed(1)), rl3=parseFloat((t2/6030*100).toFixed(1));
+  var cc='<div class="card" style="border-color:var(--border-sage)"><div class="cw">Foyer</div><div class="cn">Couple</div>'+
+    ir('Revenu foyer','6\u202f030\u20137\u202f030\u00a0\u20ac','')+
+    ir('Seuil 15%','905\u20131\u202f055\u00a0\u20ac','var(--text-conf)')+
+    ir('Total auto foyer',f(t2)+'\u00a0\u20ac/mois','var(--text-sage)')+
+    rb('Ratio foyer',fd(rh3,1)+'\u2013'+fd(rl3,1)+'%',rc(rl3),bp(rl3),mf(Math.round(6030*0.15-t2))+' \u00e0 '+mf(Math.round(7030*0.15-t2)))+
+    '</div>';
+
+  document.getElementById('S3C').innerHTML = ec + lc + cc;
+}
+
+calc();
+</script>
+</body>
+</html>
