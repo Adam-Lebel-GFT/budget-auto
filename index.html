@@ -36,11 +36,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .pill .ps{font-size:10px;color:var(--text-3)}
 .sh{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .sn{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--text-3);line-height:1;opacity:.4}
-.st{font-size:13px;font-weight:600}
-.ss{font-size:10px;color:var(--text-2)}
+.st{display:block;font-size:13px;font-weight:600}
+.ss{display:block;font-size:10px;color:var(--text-2)}
 .card{background:var(--bg-card);border:0.5px solid var(--border);border-radius:var(--r-lg);padding:14px}
-.cw{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin:0 0 2px}
-.cn{font-family:var(--serif);font-size:14px;font-weight:700;margin:0 0 10px}
+.cw{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin:0 0 2px}
+.cn{display:block;font-family:var(--serif);font-size:14px;font-weight:700;margin:0 0 10px}
 .ir{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:0.5px solid var(--border);font-size:11px}
 .ir:last-of-type{border:none}
 .il{color:var(--text-2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:6px}
@@ -55,6 +55,26 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .bp{font-size:9px;color:var(--text-3);margin-top:3px}
 .avb{background:var(--bg-conf);border:0.5px solid var(--border-conf);border-radius:var(--r-md);padding:10px 14px;font-size:11px;display:flex;align-items:flex-start;gap:8px;margin:10px 0 28px;line-height:1.5}
 .avb strong{color:var(--text-conf)}
+
+/* ── REPLIAGE (sections / cartes / panneaux) ── */
+.collap-hd{display:flex;align-items:center;gap:8px;width:100%;padding:0;border:none;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.collap-hd:focus-visible{outline:2px solid var(--zc);outline-offset:3px;border-radius:var(--r-sm)}
+.hd-ttl{flex:1;min-width:0}
+.chev{flex-shrink:0;font-size:12px;line-height:1;color:var(--text-3);transition:transform .2s}
+.is-collapsed>.collap-hd .chev{transform:rotate(-90deg)}
+.is-collapsed>.collap-body{display:none}
+.collap-sum{display:none;font-size:11px;font-weight:600;line-height:1.35;text-align:right;text-transform:none;letter-spacing:0;white-space:nowrap}
+.is-collapsed>.collap-hd>.collap-sum{display:block}
+.cs-sep{color:var(--text-3);font-weight:400;margin:0 4px}
+/* en-tête de section */
+.sec.is-collapsed>.sh{margin-bottom:20px}
+.sec.is-collapsed>.collap-hd .ss{display:none}
+/* en-tête de carte */
+.card-hd{margin-bottom:10px}
+.card-hd .cn{margin-bottom:0}
+.is-collapsed>.card-hd{margin-bottom:0}
+/* en-tête de panneau A/B */
+.zone-panel.is-collapsed>.panel-tag{margin-bottom:0}
 
 /* ── ZONE PANEL (partagé A et B) ── */
 .zone-panel{border-radius:var(--r-lg);padding:18px;border:1px solid;transition:background .35s,border-color .35s}
@@ -180,6 +200,11 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
   .prv{font-size:22px}
   .zh{flex-direction:column;gap:8px}
   .zh .prb{text-align:left}
+  .collap-sum{white-space:normal;font-size:10px}
+  .chev{font-size:11px}
+  .method-toggle-wrap{flex-direction:column;gap:6px}
+  .method-toggle{width:100%}
+  .mbtn{flex:1;min-width:0;padding:7px 8px;font-size:12px}
 }
 </style>
 </head>
@@ -202,9 +227,13 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
 </div>
 
 <!-- ══ SECTION 1 (configurable) ══ -->
-<div class="sh"><span class="sn">1</span><div><div class="st">Situation actuelle</div><div class="ss">Crédit · assurance · entretien · carburant · péages — modifiable</div></div></div>
+<section class="sec collap" id="sec1">
+<button type="button" class="sh collap-hd" aria-expanded="true" aria-controls="sec1-body" onclick="toggleCol('sec1')"><span class="sn">1</span><span class="hd-ttl"><span class="st">Situation actuelle</span><span class="ss">Crédit · assurance · entretien · carburant · péages — modifiable</span></span><span class="collap-sum" id="sec1-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+<div class="collap-body" id="sec1-body">
 <div class="g3" style="margin-bottom:24px;align-items:start">
-  <div class="card"><div class="cw">Partenaire</div><div class="cn">Elle</div>
+  <div class="card collap" id="s1-elle">
+    <button type="button" class="card-hd collap-hd" aria-expanded="true" onclick="toggleCol('s1-elle')"><span class="hd-ttl"><span class="cw">Partenaire</span><span class="cn">Elle</span></span><span class="collap-sum" id="s1-elle-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+    <div class="collap-body">
     <div class="ir"><span class="il">Revenu net</span><input type="number" class="iv-input" id="elle-revenu" value="2030" min="0" step="10" oninput="calcS1()"></div>
     <div class="ir"><span class="il">Crédit auto</span><input type="number" class="iv-input" id="elle-credit" value="0" min="0" step="5" oninput="calcS1()"></div>
     <div class="ir"><span class="il">Assurance</span><input type="number" class="iv-input" id="elle-assurance" value="90" min="0" step="5" oninput="calcS1()"></div>
@@ -214,8 +243,11 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
     <div class="ir"><span class="il">Seuil 15%</span><span class="iv" id="elle-seuil" style="color:var(--text-conf)">--</span></div>
     <div class="ir"><span class="il">Charges + crédit</span><span class="iv" id="elle-total-auto">--</span></div>
     <div id="elle-ratio-block"></div>
+    </div>
   </div>
-  <div class="card"><div class="cw">Moi</div><div class="cn">Lui</div>
+  <div class="card collap" id="s1-lui">
+    <button type="button" class="card-hd collap-hd" aria-expanded="true" onclick="toggleCol('s1-lui')"><span class="hd-ttl"><span class="cw">Moi</span><span class="cn">Lui</span></span><span class="collap-sum" id="s1-lui-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+    <div class="collap-body">
     <div class="ir"><span class="il">Revenu net</span><input type="number" class="iv-input" id="lui-revenu" value="4500" min="0" step="10" oninput="calcS1()"></div>
     <div class="ir"><span class="il">Crédit auto</span><input type="number" class="iv-input" id="lui-credit" value="150" min="0" step="5" oninput="calcS1()"></div>
     <div class="ir"><span class="il">Assurance</span><input type="number" class="iv-input" id="lui-assurance" value="35" min="0" step="5" oninput="calcS1()"></div>
@@ -225,15 +257,23 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
     <div class="ir"><span class="il">Seuil 15%</span><span class="iv" id="lui-seuil" style="color:var(--text-conf)">--</span></div>
     <div class="ir"><span class="il">Charges + crédit</span><span class="iv" id="lui-total-auto">--</span></div>
     <div id="lui-ratio-block"></div>
+    </div>
   </div>
-  <div class="card" style="border-color:var(--border-sage)"><div class="cw">Foyer</div><div class="cn">Couple</div>
+  <div class="card collap" id="s1-foyer" style="border-color:var(--border-sage)">
+    <button type="button" class="card-hd collap-hd" aria-expanded="true" onclick="toggleCol('s1-foyer')"><span class="hd-ttl"><span class="cw">Foyer</span><span class="cn">Couple</span></span><span class="collap-sum" id="s1-foyer-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+    <div class="collap-body">
     <div class="ss" style="margin-bottom:8px">Calculé automatiquement</div>
     <div id="foyer-body"></div>
+    </div>
   </div>
 </div>
+</div>
+</section>
 
 <!-- ══ SECTION 2 ══ -->
-<div class="sh"><span class="sn">2</span><div><div class="st">Simulateur — deux méthodes indépendantes</div><div class="ss">Chaque panneau a ses propres variables · Choisir la méthode active pour piloter la Section 3</div></div></div>
+<section class="sec collap" id="sec2">
+<button type="button" class="sh collap-hd" aria-expanded="true" aria-controls="sec2-body" onclick="toggleCol('sec2')"><span class="sn">2</span><span class="hd-ttl"><span class="st">Simulateur — deux méthodes indépendantes</span><span class="ss">Chaque panneau a ses propres variables · Choisir la méthode active pour piloter la Section 3</span></span><span class="collap-sum" id="sec2-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+<div class="collap-body" id="sec2-body">
 
 <!-- Toggle méthode active -->
 <div class="method-toggle-wrap">
@@ -250,7 +290,8 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
   <!-- PANNEAU A : Mensualité → Prix -->
   <div class="zone-panel sage is-active" id="ZPA" data-active-label="Méthode active · pilote Section 3" style="--ring-clr:var(--text-sage)">
 
-    <div class="panel-tag panel-tag-a">→ Méthode A · Mensualité → Prix</div>
+    <button type="button" class="panel-tag panel-tag-a collap-hd" aria-expanded="true" onclick="toggleCol('ZPA')"><span class="hd-ttl">→ Méthode A · Mensualité → Prix</span><span class="collap-sum" id="A-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+    <div class="collap-body">
 
     <div class="zh" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px">
       <div><div class="zbadge" id="A-ZB">Sage</div><div class="zdesc" id="A-ZD">Excellent — ratio très confortable</div></div>
@@ -324,12 +365,14 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
         <div class="snote">50 — 600 €/mois</div>
       </div>
     </div>
+    </div>
   </div>
 
   <!-- PANNEAU B : Prix → Mensualité -->
   <div class="zone-panel sage" id="ZPB" style="--ring-clr:var(--text-equi)">
 
-    <div class="panel-tag panel-tag-b">← Méthode B · Prix → Mensualité</div>
+    <button type="button" class="panel-tag panel-tag-b collap-hd" aria-expanded="true" onclick="toggleCol('ZPB')"><span class="hd-ttl">← Méthode B · Prix → Mensualité</span><span class="collap-sum" id="B-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+    <div class="collap-body">
 
     <div class="zh" style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px">
       <div><div class="zbadge" id="B-ZB">Sage</div><div class="zdesc" id="B-ZD">Excellent — ratio très confortable</div></div>
@@ -403,18 +446,21 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
         <div class="snote">50 — 600 €/mois</div>
       </div>
     </div>
+    </div>
   </div>
 
 </div><!-- /dual -->
+</div>
+</section>
 
 <!-- ══ SECTION 3 ══ -->
-<div class="sh" style="border-top:0.5px solid var(--border);padding-top:20px">
-  <span class="sn">3</span>
-  <div><div class="st">Après achat — simulation en temps réel</div>
-  <div class="ss">Comparaison des deux méthodes · détail piloté par la <strong id="S3LBL" style="color:var(--text-sage)">Méthode A (Mensualité → Prix)</strong></div></div>
-</div>
+<section class="sec collap" id="sec3" style="border-top:0.5px solid var(--border);padding-top:20px">
+<button type="button" class="sh collap-hd" aria-expanded="true" aria-controls="sec3-body" onclick="toggleCol('sec3')"><span class="sn">3</span><span class="hd-ttl"><span class="st">Après achat — simulation en temps réel</span><span class="ss">Comparaison des deux méthodes · détail piloté par la <strong id="S3LBL" style="color:var(--text-sage)">Méthode A (Mensualité → Prix)</strong></span></span><span class="collap-sum" id="sec3-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+<div class="collap-body" id="sec3-body">
 <div class="dual" style="margin-bottom:20px" id="S3CMP"></div>
 <div class="g3" id="S3C"></div>
+</div>
+</section>
 
 <div class="fn">Règle 20/4/15 adaptée au contexte fiscal français. Taux CIC : PHEV 5,01% · Électrique 1,00% · 60 mois. Allocations déplacement non comptées. Revenus nets uniquement.</div>
 </div>
@@ -494,6 +540,42 @@ function rb(lbl, val, col, b, mg) {
     '<div class="rright"><div class="rlbl">Marge</div><div class="rmg">' + mg + '</div></div></div>';
 }
 
+/* ── REPLIAGE DES SECTIONS ── */
+var COL = {}; /* id du bloc -> true si replié */
+function isCol(id) { return COL[id] === true; }
+function applyCol(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (COL[id]) el.classList.add('is-collapsed'); else el.classList.remove('is-collapsed');
+  var hd = el.querySelector('.collap-hd');
+  if (hd) hd.setAttribute('aria-expanded', COL[id] ? 'false' : 'true');
+}
+function toggleCol(id) { COL[id] = !COL[id]; applyCol(id); }
+
+/* Sous-total affiché quand le bloc est replié */
+function setSum(id, html) { var e = document.getElementById(id); if (e) e.innerHTML = html; }
+function sumTot(tot, ratio) {
+  return f(tot) + '\u00a0\u20ac/mois<span class="cs-sep">\u00b7</span>' +
+    '<span style="color:' + rc(ratio) + '">' + fd(ratio, 1) + '%</span>';
+}
+function sumPanel(sc) {
+  return f(sc.px) + '\u00a0\u20ac<span class="cs-sep">\u00b7</span>' +
+    '<span style="color:' + rc(sc.rl * 100) + '">' + f(sc.tot) + '\u00a0\u20ac/mois</span>';
+}
+
+/* Carte repliable (Section 3, regénérée à chaque calcul) */
+function colCard(id, work, name, sum, body, style) {
+  var c = isCol(id);
+  return '<div class="card collap' + (c ? ' is-collapsed' : '') + '" id="' + id + '"' +
+    (style ? ' style="' + style + '"' : '') + '>' +
+    '<button type="button" class="card-hd collap-hd" aria-expanded="' + (c ? 'false' : 'true') +
+    '" onclick="toggleCol(\'' + id + '\')">' +
+    '<span class="hd-ttl"><span class="cw">' + work + '</span><span class="cn">' + name + '</span></span>' +
+    '<span class="collap-sum">' + sum + '</span>' +
+    '<span class="chev" aria-hidden="true">\u25be</span></button>' +
+    '<div class="collap-body">' + body + '</div></div>';
+}
+
 /* ── MISE À JOUR COMMUNE (gauge + ratios) ── */
 function updatePanel(pfx, zone, rl, tot) {
   var zd = ZDATA[zone];
@@ -501,7 +583,8 @@ function updatePanel(pfx, zone, rl, tot) {
   document.getElementById(pfx + '-ZD').textContent = zd.desc;
 
   var zp = document.getElementById(pfx === 'A' ? 'ZPA' : 'ZPB');
-  zp.className = 'zone-panel ' + zone + (active === pfx.toLowerCase() ? ' is-active' : '');
+  zp.className = 'zone-panel collap ' + zone + (active === pfx.toLowerCase() ? ' is-active' : '') +
+    (isCol(zp.id) ? ' is-collapsed' : '');
 
   var np = Math.min(rl / 0.25, 1) * 100;
   document.getElementById(pfx + '-GN').style.left = np + '%';
@@ -529,6 +612,7 @@ function renderPersonCard(pfx, obj) {
   var marge = seuil - tot;
   var zone = getZone(ratio / 100);
   var col = rc(ratio);
+  setSum('s1-' + pfx + '-sum', sumTot(tot, ratio));
   document.getElementById(pfx+'-seuil').textContent = f(Math.round(seuil)) + '\u00a0\u20ac/mois';
   document.getElementById(pfx+'-total-auto').textContent = f(tot) + '\u00a0\u20ac/mois';
   document.getElementById(pfx+'-ratio-block').innerHTML =
@@ -546,6 +630,9 @@ function renderFoyerCard() {
   var marge = seuil - tot;
   var zone = getZone(ratio / 100);
   var col = rc(ratio);
+  var sm = sumTot(tot, ratio);
+  setSum('s1-foyer-sum', sm);
+  setSum('sec1-sum', sm);
   document.getElementById('foyer-body').innerHTML =
     ir('Revenu foyer', f(revenu)+'\u00a0\u20ac/mois', '') +
     ir('Seuil 15%', f(Math.round(seuil))+'\u00a0\u20ac/mois', 'var(--text-conf)') +
@@ -645,6 +732,8 @@ function calcA() {
   if (s.a > 10000) { wa2.style.display=''; wa2.textContent='\u26a0\ufe0f '+f(s.a)+'\u00a0\u20ac en cash \u2014 v\u00e9rifiez votre fonds d\u2019urgence'; }
   else wa2.style.display='none';
 
+  setSum('A-sum', sumPanel(s));
+
   updatePanel('A', s.zoneLui, s.rl, s.tot);
   if (active === 'a') renderS3(s.m, s.c);
   renderComparison();
@@ -684,6 +773,8 @@ function calcB() {
   if (s.a > 10000) { wa2.style.display=''; wa2.textContent='\u26a0\ufe0f '+f(s.a)+'\u00a0\u20ac en cash \u2014 v\u00e9rifiez votre fonds d\u2019urgence'; }
   else wa2.style.display='none';
 
+  setSum('B-sum', sumPanel(s));
+
   updatePanel('B', s.zoneLui, s.rl, s.tot);
   if (active === 'b') renderS3(s.m, s.c);
   renderComparison();
@@ -694,35 +785,40 @@ function renderS3(mens, charges) {
   var elleTot = elleTotal();
   var elleRatio = ELLE.revenu > 0 ? elleTot / ELLE.revenu * 100 : 0;
   var elleMarge = ELLE.revenu * 0.15 - elleTot;
-  var ec = '<div class="card"><div class="cw">Partenaire</div><div class="cn">Elle \u00b7 <span style="font-size:11px;font-weight:400;color:var(--text-3)">inchang\u00e9e</span></div>' +
+  var ec = colCard('s3-elle','Partenaire',
+    'Elle \u00b7 <span style="font-size:11px;font-weight:400;color:var(--text-3)">inchang\u00e9e</span>',
+    sumTot(elleTot, elleRatio),
     ir('Revenu net',f(ELLE.revenu)+'\u00a0\u20ac/mois','')+ir('Seuil 15%',f(Math.round(ELLE.revenu*0.15))+'\u00a0\u20ac/mois','var(--text-conf)')+
     ir('Cr\u00e9dit auto',f(ELLE.credit)+'\u00a0\u20ac','')+ir('Charges totales',f(elleTot-ELLE.credit)+'\u00a0\u20ac','')+
-    rb('Ratio \u00b7 inchang\u00e9',fd(elleRatio,1)+'%',rc(elleRatio),bpct(elleRatio),mf(Math.round(elleMarge)))+
-    '</div>';
+    rb('Ratio \u00b7 inchang\u00e9',fd(elleRatio,1)+'%',rc(elleRatio),bpct(elleRatio),mf(Math.round(elleMarge))),
+    '');
 
   var tot = mens + charges;
   var luiRatio = LUI.revenu > 0 ? tot / LUI.revenu * 100 : 0;
   var luiMarge = LUI.revenu * 0.15 - tot;
-  var lc = '<div class="card"><div class="cw">Moi</div><div class="cn">Lui</div>'+
+  var lc = colCard('s3-lui','Moi','Lui',
+    sumTot(tot, luiRatio),
     ir('Revenu net',f(LUI.revenu)+'\u00a0\u20ac/mois','')+
     ir('Seuil 15%',f(Math.round(LUI.revenu*0.15))+'\u00a0\u20ac/mois','var(--text-conf)')+
     ir('Mensualit\u00e9 cr\u00e9dit',f(mens)+'\u00a0\u20ac','')+
     ir('Charges',f(charges)+'\u00a0\u20ac','')+
     ir('Total auto',f(tot)+'\u00a0\u20ac/mois','var(--text-conf)')+
-    rb('Ratio',fd(luiRatio,1)+'%',rc(luiRatio),bpct(luiRatio),mf(Math.round(luiMarge)))+
-    '</div>';
+    rb('Ratio',fd(luiRatio,1)+'%',rc(luiRatio),bpct(luiRatio),mf(Math.round(luiMarge))),
+    '');
 
   var t2 = elleTot + tot;
   var revFoyer = ELLE.revenu + LUI.revenu;
   var foyerRatio = revFoyer > 0 ? t2 / revFoyer * 100 : 0;
   var foyerMarge = revFoyer * 0.15 - t2;
-  var cc = '<div class="card" style="border-color:var(--border-sage)"><div class="cw">Foyer</div><div class="cn">Couple</div>'+
+  var cc = colCard('s3-foyer','Foyer','Couple',
+    sumTot(t2, foyerRatio),
     ir('Revenu foyer',f(revFoyer)+'\u00a0\u20ac','')+
     ir('Seuil 15%',f(Math.round(revFoyer*0.15))+'\u00a0\u20ac','var(--text-conf)')+
     ir('Total auto foyer',f(t2)+'\u00a0\u20ac/mois','var(--text-sage)')+
-    rb('Ratio foyer',fd(foyerRatio,1)+'%',rc(foyerRatio),bpct(foyerRatio),mf(Math.round(foyerMarge)))+
-    '</div>';
+    rb('Ratio foyer',fd(foyerRatio,1)+'%',rc(foyerRatio),bpct(foyerRatio),mf(Math.round(foyerMarge))),
+    'border-color:var(--border-sage)');
 
+  setSum('sec3-sum', sumTot(t2, foyerRatio));
   document.getElementById('S3C').innerHTML = ec + lc + cc;
 }
 
@@ -748,6 +844,9 @@ function cmpCard(label, s, isActive, ringVar) {
 function renderComparison() {
   var sA = computeScenario('A');
   var sB = computeScenario('B');
+  var sAct = active === 'a' ? sA : sB;
+  setSum('sec2-sum', '<span style="color:' + (active === 'a' ? 'var(--text-sage)' : 'var(--text-equi)') + '">' +
+    (active === 'a' ? 'A' : 'B') + '</span><span class="cs-sep">\u00b7</span>' + sumPanel(sAct));
   document.getElementById('S3CMP').innerHTML =
     cmpCard('M\u00e9thode A \u00b7 Mensualit\u00e9 \u2192 Prix', sA, active==='a', 'var(--text-sage)') +
     cmpCard('M\u00e9thode B \u00b7 Prix \u2192 Mensualit\u00e9', sB, active==='b', 'var(--text-equi)');
