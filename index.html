@@ -66,6 +66,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .collap-sum{display:none;font-size:11px;font-weight:600;line-height:1.35;text-align:right;text-transform:none;letter-spacing:0;white-space:nowrap}
 .is-collapsed>.collap-hd>.collap-sum{display:block}
 .cs-sep{color:var(--text-3);font-weight:400;margin:0 4px}
+.cs-lbl{color:var(--text-3);font-weight:400;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
 /* en-tête de section */
 .sec.is-collapsed>.sh{margin-bottom:20px}
 .sec.is-collapsed>.collap-hd .ss{display:none}
@@ -84,6 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 .zone-panel.risque{background:var(--bg-risk);border-color:var(--border-risk)}
 
 /* Anneau actif */
+.zone-panel.is-hidden{display:none}
 .zone-panel.is-active{box-shadow:0 0 0 2.5px var(--ring-clr,#1d4ed8);position:relative}
 .zone-panel.is-active::before{
   content:attr(data-active-label);
@@ -185,6 +187,7 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
 
 /* ── DUAL LAYOUT ── */
 .dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;align-items:start}
+.dual.solo{grid-template-columns:1fr}
 
 /* ── FOOTER ── */
 .fn{font-size:11px;color:var(--text-3);padding:16px 0 0;border-top:0.5px solid var(--border);margin-top:20px;line-height:1.5}
@@ -272,7 +275,7 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
 
 <!-- ══ SECTION 2 ══ -->
 <section class="sec collap" id="sec2">
-<button type="button" class="sh collap-hd" aria-expanded="true" aria-controls="sec2-body" onclick="toggleCol('sec2')"><span class="sn">2</span><span class="hd-ttl"><span class="st">Simulateur — deux méthodes indépendantes</span><span class="ss">Chaque panneau a ses propres variables · Choisir la méthode active pour piloter la Section 3</span></span><span class="collap-sum" id="sec2-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
+<button type="button" class="sh collap-hd" aria-expanded="true" aria-controls="sec2-body" onclick="toggleCol('sec2')"><span class="sn">2</span><span class="hd-ttl"><span class="st">Simulateur — deux méthodes indépendantes</span><span class="ss">Chaque méthode a ses propres variables · seule la méthode active est affichée, et c’est elle qui pilote la Section 3</span></span><span class="collap-sum" id="sec2-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
 <div class="collap-body" id="sec2-body">
 
 <!-- Toggle méthode active -->
@@ -285,7 +288,7 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
 </div>
 
 <!-- ══ DUAL PANELS ══ -->
-<div class="dual">
+<div class="dual solo">
 
   <!-- PANNEAU A : Mensualité → Prix -->
   <div class="zone-panel sage is-active" id="ZPA" data-active-label="Méthode active · pilote Section 3" style="--ring-clr:var(--text-sage)">
@@ -369,7 +372,7 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
   </div>
 
   <!-- PANNEAU B : Prix → Mensualité -->
-  <div class="zone-panel sage" id="ZPB" style="--ring-clr:var(--text-equi)">
+  <div class="zone-panel sage" id="ZPB" data-active-label="Méthode active · pilote Section 3" style="--ring-clr:var(--text-equi)">
 
     <button type="button" class="panel-tag panel-tag-b collap-hd" aria-expanded="true" onclick="toggleCol('ZPB')"><span class="hd-ttl">← Méthode B · Prix → Mensualité</span><span class="collap-sum" id="B-sum"></span><span class="chev" aria-hidden="true">▾</span></button>
     <div class="collap-body">
@@ -554,8 +557,11 @@ function toggleCol(id) { COL[id] = !COL[id]; applyCol(id); }
 
 /* Sous-total affiché quand le bloc est replié */
 function setSum(id, html) { var e = document.getElementById(id); if (e) e.innerHTML = html; }
-function sumTot(tot, ratio) {
-  return f(tot) + '\u00a0\u20ac/mois<span class="cs-sep">\u00b7</span>' +
+function sumTot(rev, tot, ratio) {
+  return '<span class="cs-lbl">Revenu</span>\u00a0' + f(rev) + '\u00a0\u20ac' +
+    '<span class="cs-sep">\u00b7</span>' +
+    '<span class="cs-lbl">Auto</span>\u00a0' + f(tot) + '\u00a0\u20ac/mois' +
+    '<span class="cs-sep">\u00b7</span>' +
     '<span style="color:' + rc(ratio) + '">' + fd(ratio, 1) + '%</span>';
 }
 function sumPanel(sc) {
@@ -583,7 +589,8 @@ function updatePanel(pfx, zone, rl, tot) {
   document.getElementById(pfx + '-ZD').textContent = zd.desc;
 
   var zp = document.getElementById(pfx === 'A' ? 'ZPA' : 'ZPB');
-  zp.className = 'zone-panel collap ' + zone + (active === pfx.toLowerCase() ? ' is-active' : '') +
+  zp.className = 'zone-panel collap ' + zone +
+    (active === pfx.toLowerCase() ? ' is-active' : ' is-hidden') +
     (isCol(zp.id) ? ' is-collapsed' : '');
 
   var np = Math.min(rl / 0.25, 1) * 100;
@@ -612,7 +619,7 @@ function renderPersonCard(pfx, obj) {
   var marge = seuil - tot;
   var zone = getZone(ratio / 100);
   var col = rc(ratio);
-  setSum('s1-' + pfx + '-sum', sumTot(tot, ratio));
+  setSum('s1-' + pfx + '-sum', sumTot(obj.revenu, tot, ratio));
   document.getElementById(pfx+'-seuil').textContent = f(Math.round(seuil)) + '\u00a0\u20ac/mois';
   document.getElementById(pfx+'-total-auto').textContent = f(tot) + '\u00a0\u20ac/mois';
   document.getElementById(pfx+'-ratio-block').innerHTML =
@@ -630,7 +637,7 @@ function renderFoyerCard() {
   var marge = seuil - tot;
   var zone = getZone(ratio / 100);
   var col = rc(ratio);
-  var sm = sumTot(tot, ratio);
+  var sm = sumTot(revenu, tot, ratio);
   setSum('s1-foyer-sum', sm);
   setSum('sec1-sum', sm);
   document.getElementById('foyer-body').innerHTML =
@@ -787,7 +794,7 @@ function renderS3(mens, charges) {
   var elleMarge = ELLE.revenu * 0.15 - elleTot;
   var ec = colCard('s3-elle','Partenaire',
     'Elle \u00b7 <span style="font-size:11px;font-weight:400;color:var(--text-3)">inchang\u00e9e</span>',
-    sumTot(elleTot, elleRatio),
+    sumTot(ELLE.revenu, elleTot, elleRatio),
     ir('Revenu net',f(ELLE.revenu)+'\u00a0\u20ac/mois','')+ir('Seuil 15%',f(Math.round(ELLE.revenu*0.15))+'\u00a0\u20ac/mois','var(--text-conf)')+
     ir('Cr\u00e9dit auto',f(ELLE.credit)+'\u00a0\u20ac','')+ir('Charges totales',f(elleTot-ELLE.credit)+'\u00a0\u20ac','')+
     rb('Ratio \u00b7 inchang\u00e9',fd(elleRatio,1)+'%',rc(elleRatio),bpct(elleRatio),mf(Math.round(elleMarge))),
@@ -797,7 +804,7 @@ function renderS3(mens, charges) {
   var luiRatio = LUI.revenu > 0 ? tot / LUI.revenu * 100 : 0;
   var luiMarge = LUI.revenu * 0.15 - tot;
   var lc = colCard('s3-lui','Moi','Lui',
-    sumTot(tot, luiRatio),
+    sumTot(LUI.revenu, tot, luiRatio),
     ir('Revenu net',f(LUI.revenu)+'\u00a0\u20ac/mois','')+
     ir('Seuil 15%',f(Math.round(LUI.revenu*0.15))+'\u00a0\u20ac/mois','var(--text-conf)')+
     ir('Mensualit\u00e9 cr\u00e9dit',f(mens)+'\u00a0\u20ac','')+
@@ -811,14 +818,14 @@ function renderS3(mens, charges) {
   var foyerRatio = revFoyer > 0 ? t2 / revFoyer * 100 : 0;
   var foyerMarge = revFoyer * 0.15 - t2;
   var cc = colCard('s3-foyer','Foyer','Couple',
-    sumTot(t2, foyerRatio),
+    sumTot(revFoyer, t2, foyerRatio),
     ir('Revenu foyer',f(revFoyer)+'\u00a0\u20ac','')+
     ir('Seuil 15%',f(Math.round(revFoyer*0.15))+'\u00a0\u20ac','var(--text-conf)')+
     ir('Total auto foyer',f(t2)+'\u00a0\u20ac/mois','var(--text-sage)')+
     rb('Ratio foyer',fd(foyerRatio,1)+'%',rc(foyerRatio),bpct(foyerRatio),mf(Math.round(foyerMarge))),
     'border-color:var(--border-sage)');
 
-  setSum('sec3-sum', sumTot(t2, foyerRatio));
+  setSum('sec3-sum', sumTot(revFoyer, t2, foyerRatio));
   document.getElementById('S3C').innerHTML = ec + lc + cc;
 }
 
@@ -859,20 +866,17 @@ function setActive(m) {
   var lbl = document.getElementById('S3LBL');
   if (m === 'a') {
     ba.className = 'mbtn on-a'; bb.className = 'mbtn';
-    document.getElementById('ZPA').classList.add('is-active');
-    document.getElementById('ZPB').classList.remove('is-active');
     lbl.textContent = 'M\u00e9thode A (Mensualit\u00e9 \u2192 Prix)';
     lbl.style.color = 'var(--text-sage)';
-    /* recalc A pour rafraîchir S3 */
-    calcA();
   } else {
     bb.className = 'mbtn on-b'; ba.className = 'mbtn';
-    document.getElementById('ZPB').classList.add('is-active');
-    document.getElementById('ZPA').classList.remove('is-active');
     lbl.textContent = 'M\u00e9thode B (Prix \u2192 Mensualit\u00e9)';
     lbl.style.color = 'var(--text-equi)';
-    calcB();
   }
+  /* les deux recalculs : updatePanel affiche le panneau actif et masque l'autre,
+     et un seul des deux rafraîchit la Section 3 (celui qui est actif) */
+  calcA();
+  calcB();
 }
 
 /* ── TAUX ── */
