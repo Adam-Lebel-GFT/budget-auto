@@ -59,14 +59,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15
 /* ── REPLIAGE (sections / cartes / panneaux) ── */
 .collap-hd{display:flex;align-items:center;gap:8px;width:100%;padding:0;border:none;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .collap-hd:focus-visible{outline:2px solid var(--zc);outline-offset:3px;border-radius:var(--r-sm)}
-.hd-ttl{flex:1;min-width:0}
+.hd-ttl{flex:1}  /* pas de min-width:0 : le titre ne doit jamais passer sous sa
+                    largeur minimale, sinon il déborde sur le sous-total */
 .chev{flex-shrink:0;font-size:12px;line-height:1;color:var(--text-3);transition:transform .2s}
 .is-collapsed>.collap-hd .chev{transform:rotate(-90deg)}
 .is-collapsed>.collap-body{display:none}
-.collap-sum{display:none;font-size:11px;font-weight:600;line-height:1.35;text-align:right;text-transform:none;letter-spacing:0;white-space:nowrap}
+.collap-sum{display:none;min-width:0;font-size:11px;font-weight:600;line-height:1.35;text-align:right;text-transform:none;letter-spacing:0;white-space:normal}
 .is-collapsed>.collap-hd>.collap-sum{display:block}
 .cs-sep{color:var(--text-3);font-weight:400;margin:0 4px}
 .cs-lbl{color:var(--text-3);font-weight:400;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+.cs-seg{white-space:nowrap}
 /* en-tête de section */
 .sec.is-collapsed>.sh{margin-bottom:20px}
 .sec.is-collapsed>.collap-hd .ss{display:none}
@@ -203,7 +205,7 @@ input.rate-custom-inp{width:64px;font-size:11px;padding:2px 6px;border:0.5px sol
   .prv{font-size:22px}
   .zh{flex-direction:column;gap:8px}
   .zh .prb{text-align:left}
-  .collap-sum{white-space:normal;font-size:10px}
+  .collap-sum{font-size:10px}
   .chev{font-size:11px}
   .method-toggle-wrap{flex-direction:column;gap:6px}
   .method-toggle{width:100%}
@@ -544,7 +546,13 @@ function rb(lbl, val, col, b, mg) {
 }
 
 /* ── REPLIAGE DES SECTIONS ── */
-var COL = {}; /* id du bloc -> true si replié */
+/* id du bloc -> true si replié.
+   Les cartes Elle / Lui / Couple des Sections 1 et 3 s'ouvrent repliées :
+   on voit d'abord les sous-totaux, on déplie ce qu'on veut détailler. */
+var COL = {
+  's1-elle': true, 's1-lui': true, 's1-foyer': true,
+  's3-elle': true, 's3-lui': true, 's3-foyer': true
+};
 function isCol(id) { return COL[id] === true; }
 function applyCol(id) {
   var el = document.getElementById(id);
@@ -555,18 +563,21 @@ function applyCol(id) {
 }
 function toggleCol(id) { COL[id] = !COL[id]; applyCol(id); }
 
-/* Sous-total affiché quand le bloc est replié */
+/* Sous-total affiché quand le bloc est replié.
+   <wbr> = point de coupure autorisé entre deux segments (il n'y a aucune espace
+   dans la chaîne, donc sans lui le sous-total ne peut pas se replier). */
+var CS_SEP = '<span class="cs-sep">\u00b7</span><wbr>';
 function setSum(id, html) { var e = document.getElementById(id); if (e) e.innerHTML = html; }
 function sumTot(rev, tot, ratio) {
-  return '<span class="cs-lbl">Revenu</span>\u00a0' + f(rev) + '\u00a0\u20ac' +
-    '<span class="cs-sep">\u00b7</span>' +
-    '<span class="cs-lbl">Auto</span>\u00a0' + f(tot) + '\u00a0\u20ac/mois' +
-    '<span class="cs-sep">\u00b7</span>' +
-    '<span style="color:' + rc(ratio) + '">' + fd(ratio, 1) + '%</span>';
+  return '<span class="cs-seg"><span class="cs-lbl">Revenu</span>\u00a0' + f(rev) + '\u00a0\u20ac</span>' +
+    CS_SEP +
+    '<span class="cs-seg"><span class="cs-lbl">Auto</span>\u00a0' + f(tot) + '\u00a0\u20ac/mois</span>' +
+    CS_SEP +
+    '<span class="cs-seg" style="color:' + rc(ratio) + '">' + fd(ratio, 1) + '%</span>';
 }
 function sumPanel(sc) {
-  return f(sc.px) + '\u00a0\u20ac<span class="cs-sep">\u00b7</span>' +
-    '<span style="color:' + rc(sc.rl * 100) + '">' + f(sc.tot) + '\u00a0\u20ac/mois</span>';
+  return '<span class="cs-seg">' + f(sc.px) + '\u00a0\u20ac</span>' + CS_SEP +
+    '<span class="cs-seg" style="color:' + rc(sc.rl * 100) + '">' + f(sc.tot) + '\u00a0\u20ac/mois</span>';
 }
 
 /* Carte repliable (Section 3, regénérée à chaque calcul) */
@@ -852,8 +863,8 @@ function renderComparison() {
   var sA = computeScenario('A');
   var sB = computeScenario('B');
   var sAct = active === 'a' ? sA : sB;
-  setSum('sec2-sum', '<span style="color:' + (active === 'a' ? 'var(--text-sage)' : 'var(--text-equi)') + '">' +
-    (active === 'a' ? 'A' : 'B') + '</span><span class="cs-sep">\u00b7</span>' + sumPanel(sAct));
+  setSum('sec2-sum', '<span class="cs-seg" style="color:' + (active === 'a' ? 'var(--text-sage)' : 'var(--text-equi)') + '">' +
+    (active === 'a' ? 'A' : 'B') + '</span>' + CS_SEP + sumPanel(sAct));
   document.getElementById('S3CMP').innerHTML =
     cmpCard('M\u00e9thode A \u00b7 Mensualit\u00e9 \u2192 Prix', sA, active==='a', 'var(--text-sage)') +
     cmpCard('M\u00e9thode B \u00b7 Prix \u2192 Mensualit\u00e9', sB, active==='b', 'var(--text-equi)');
@@ -901,6 +912,7 @@ function setRateB(type) {
 function onRateBCustom() { rateB = parseFloat(document.getElementById('B-ri').value)/100||0.0501; calcB(); }
 
 /* ── INIT ── */
+Object.keys(COL).forEach(function (id) { applyCol(id); });
 calcS1();
 </script>
 </body>
